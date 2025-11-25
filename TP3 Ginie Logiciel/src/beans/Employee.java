@@ -1,6 +1,5 @@
 package beans;
 
-import beans.EmployeeBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +20,6 @@ public class Employee implements Cloneable {
 
     private final List<Employee> subordonnes = new ArrayList<>();
 
-    private Employee(EmployeeBuilder builder) {
     public Employee(EmployeeBuilder builder) {
         this.id = builder.id;
         this.nom = builder.nom;
@@ -79,7 +77,6 @@ public class Employee implements Cloneable {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
         Employee cloned = (Employee) super.clone();
         // Note: This is a shallow copy of subordinates.
         // For a deep copy, you would need to clone each subordinate as well.

@@ -1,42 +1,12 @@
-    // Builder
-    public static class EmployeeBuilder {
-        private int id;
-        private final String nom;
-        private final String prenom;
-        private String adresse;
-        private String ville;
-        private String codePostal;
-        private String telephone;
-        private String email;
-        private String poste;
-        private double salaire;
-        private java.util.Date dateEmbauche;
 package beans;
 
-        public EmployeeBuilder(int id, String nom, String prenom) {
-            this.id = id;
-            this.nom = nom;
-            this.prenom = prenom;
-        }
 import java.util.Date;
 
-        public EmployeeBuilder id(int id) { this.id = id; return this; }
-        public EmployeeBuilder adresse(String adresse) { this.adresse = adresse; return this; }
-        public EmployeeBuilder ville(String ville) { this.ville = ville; return this; }
-        public EmployeeBuilder codePostal(String codePostal) { this.codePostal = codePostal; return this; }
-        public EmployeeBuilder telephone(String telephone) { this.telephone = telephone; return this; }
-        public EmployeeBuilder email(String email) { this.email = email; return this; }
-        public EmployeeBuilder poste(String poste) { this.poste = poste; return this; }
-        public EmployeeBuilder salaire(double salaire) { this.salaire = salaire; return this; }
-        public EmployeeBuilder dateEmbauche(java.util.Date dateEmbauche) { this.dateEmbauche = dateEmbauche; return this; }
 public class EmployeeBuilder {
     // Required parameters
     public final int id;
     public final String nom;
 
-        public Employee build() {
-            return new Employee(this);
-        }
     // Optional parameters - initialized to default values
     public String prenom = "";
     public String adresse = "";

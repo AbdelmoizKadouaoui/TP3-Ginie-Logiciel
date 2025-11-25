@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import beans.memento.EmployeeMemento;
+import dao.visitor.IVisitor;
 public class Employee implements Cloneable {
     private int id;
     private String nom;
@@ -101,5 +102,10 @@ public class Employee implements Cloneable {
         this.poste = memento.getPoste();
         this.salaire = memento.getSalaire();
         this.dateEmbauche = memento.getDateEmbauche();
+    }
+
+    // Visitor Pattern Method
+    public void accept(IVisitor visitor) {
+        visitor.visit(this);
     }
 }

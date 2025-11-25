@@ -98,3 +98,51 @@ Le projet a été structuré en trois couches principales pour séparer les resp
   - **Pont Vue-Service** : La `EmployeeView` dépend de l'interface `IEmployeeService`, pas de son implémentation `EmployeeServiceImpl`.
   - **Pont Service-DAO** : Le `EmployeeServiceImpl` dépend de l'interface `IEmployeeDao`, pas de `EmployeeDaoImpl` ou de ses décorateurs/proxies.
 - Ce découplage est la clé de notre architecture. Il permet de changer facilement une implémentation (par exemple, remplacer le DAO par un proxy ou un décorateur) sans affecter les couches qui l'utilisent.
+
+---
+
+## Patterns de Comportement
+
+### 1. Observer
+
+**Objectif** : Définir une dépendance un-à-plusieurs entre des objets où, lorsqu'un objet change d'état, tous ses dépendants sont notifiés et mis à jour automatiquement.
+
+**Implémentation** :
+- La classe `EmployeeDao` a été transformée en **Sujet (Observable)**. Elle maintient une liste d'observateurs (`IObserver`) et les notifie après chaque opération de modification (`insert`, `update`, `delete`).
+- Une interface `IObserver` a été créée avec une méthode `update()`.
+- La nouvelle classe `EmployeeCache` implémente `IObserver`. Elle s'enregistre auprès de `EmployeeDao` et sa méthode `update()` est appelée lorsque les données changent, lui permettant de rafraîchir sa propre liste d'employés.
+
+### 2. Visitor
+
+**Objectif** : Représenter une opération à effectuer sur les éléments d'une structure d'objets. Le visiteur permet de définir une nouvelle opération sans changer les classes des éléments sur lesquels il opère.
+
+**Implémentation** :
+- Une interface `IVisitor` a été créée, définissant une méthode `visit(Employee employee)`.
+- Une implémentation concrète, `TxtExportVisitor`, a été ajoutée. Son rôle est de formater les données d'un employé en une ligne de texte.
+- La classe `Employee` a été modifiée pour inclure une méthode `accept(IVisitor visitor)`, qui permet à un visiteur d'opérer sur elle.
+- La couche DAO peut maintenant utiliser ce visiteur pour exporter la liste des employés dans un fichier texte plat.
+
+### 3. Strategy
+
+**Objectif** : Définir une famille d'algorithmes, encapsuler chacun d'eux et les rendre interchangeables. La stratégie permet à l'algorithme de varier indépendamment des clients qui l'utilisent.
+
+**Implémentation** :
+- Une interface `ISavingStrategy` a été créée, définissant une méthode `save(List<Employee> employees)`.
+- Deux stratégies concrètes ont été implémentées :
+  - `DatabaseSavingStrategy` : Enregistre les données dans la base de données (simulation).
+  - `FileSavingStrategy` : Enregistre la liste complète des employés dans un fichier.
+- La classe `EmployeeDao` est configurée avec une de ces stratégies au démarrage. Sa méthode `saveAllData()` délègue l'opération de sauvegarde à la stratégie choisie.
+
+### 4. Command
+
+**Objectif** : Encapsuler une requête en tant qu'objet, ce qui permet de paramétrer des clients avec différentes requêtes, de mettre en file d'attente ou de journaliser des requêtes, et de supporter des opérations annulables.
+
+**Implémentation** :
+- Une interface `ICommand` a été créée avec une méthode `execute()`.
+- Des classes de commande concrètes ont été ajoutées pour chaque fonctionnalité du service :
+  - `CreateEmployeeCommand`
+  - `DeleteEmployeeCommand`
+  - `FindAllEmployeesCommand`
+  - `DuplicateEmployeeCommand`
+- Chaque classe de commande encapsule une requête vers le `IEmployeeService` ainsi que les paramètres nécessaires.
+- Un `CommandInvoker` a été créé pour exécuter les commandes. Cela fournit un point d'entrée unique pour l'API, qui pourra être facilement exposé via des services REST ou autres.
